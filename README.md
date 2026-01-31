@@ -53,3 +53,21 @@ python server.py
 ## Hinweise
 - Auto‑generierte Dateien (z. B. `node_modules/`, `dist/`, `venv/`) sind **ignoriert**.
 - Bitte keine Ergebnisdokumente (PDF/DOCX) in dieses Repo legen – siehe `00_README.md`.
+
+
+## Autostart (launchd)
+Die Templates liegen unter `atlas-bridge/launchd/`.
+
+Beispiel-Setup:
+```bash
+cp atlas-bridge/launchd/com.companion.mcp.bridge.plist ~/Library/LaunchAgents/
+cp atlas-bridge/launchd/com.companion.mcp.health.plist ~/Library/LaunchAgents/
+launchctl unload ~/Library/LaunchAgents/com.companion.mcp.bridge.plist 2>/dev/null
+launchctl load ~/Library/LaunchAgents/com.companion.mcp.bridge.plist
+launchctl unload ~/Library/LaunchAgents/com.companion.mcp.health.plist 2>/dev/null
+launchctl load ~/Library/LaunchAgents/com.companion.mcp.health.plist
+```
+
+Statusdatei fuer das Dashboard:
+`/Users/andreasschonlein/companion-system/atlas-bridge/.status/mcp_status.json`
+
