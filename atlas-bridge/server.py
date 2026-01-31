@@ -434,6 +434,67 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
                 return s[5:].strip()
         return ""
 
+
+    def _strip_frontmatter(md: str) -> str:
+        lines = (md or "").splitlines()
+        if lines and lines[0].strip() == "---":
+            for i in range(1, len(lines)):
+                if lines[i].strip() == "---":
+                    return "\n".join(lines[i + 1 :])
+        return md or ""
+
+    def _parse_tasks(task_md: str, limit: int = 5) -> List[Dict[str, Any]]:
+        items: List[Dict[str, Any]] = []
+        for line in _strip_frontmatter(task_md).splitlines():
+            s = line.strip()
+            done = None
+            if s.startswith("- [ ]") or s.startswith("* [ ]"):
+                done = False
+            elif s.lower().startswith("- [x]") or s.lower().startswith("* [x]"):
+                done = True
+            if done is None:
+                continue
+            text = s[5:].strip()
+            if text:
+                items.append({"text": text, "done": done})
+            if len(items) >= limit:
+                break
+        return items
+
+    def _parse_notes_excerpt(notes_md: str, limit: int = 6) -> List[str]:
+        items: List[str] = []
+        for line in _strip_frontmatter(notes_md).splitlines():
+            s = line.strip()
+            if not s or s.startswith("#"):
+                continue
+            items.append(s)
+            if len(items) >= limit:
+                break
+        return items
+
+    def _parse_timeline(timeline_md: str, limit: int = 5) -> List[Dict[str, Any]]:
+        items: List[Dict[str, Any]] = []
+        for line in _strip_frontmatter(timeline_md).splitlines():
+            s = line.strip()
+            if not (s.startswith("- ") or s.startswith("* ")):
+                continue
+            body = s[2:].strip()
+            if not body:
+                continue
+            date = None
+            text = body
+            m = re.match(r"^(\d{4}-\d{2}-\d{2})\s*[:\-–]\s*(.*)$", body)
+            if m:
+                date = m.group(1)
+                text = m.group(2).strip()
+            elif re.match(r"^\d{4}-\d{2}-\d{2}$", body):
+                date = body
+                text = ""
+            items.append({"date": date, "text": text})
+            if len(items) >= limit:
+                break
+        return items
+
     def _build_dashboard_state(domain: str) -> Dict[str, Any]:
         # Minimal "dashboard data stream" from local companion-system folders.
         # This is intentionally naive; it creates stable IDs + useful summaries.
@@ -460,8 +521,19 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
                 timeline = (p / "Timeline.md")
 
                 next_action = ""
+                tasks: List[Dict[str, Any]] = []
                 if aufgaben.exists():
-                    next_action = _extract_next_action(aufgaben.read_text(encoding="utf-8", errors="replace"))
+                    task_md = aufgaben.read_text(encoding="utf-8", errors="replace")
+                    next_action = _extract_next_action(task_md)
+                    tasks = _parse_tasks(task_md, limit=5)
+
+                notes_excerpt: List[str] = []
+                if notes.exists():
+                    notes_excerpt = _parse_notes_excerpt(notes.read_text(encoding="utf-8", errors="replace"), limit=6)
+
+                timeline_items: List[Dict[str, Any]] = []
+                if timeline.exists():
+                    timeline_items = _parse_timeline(timeline.read_text(encoding="utf-8", errors="replace"), limit=5)
 
                 fm: Dict[str, Any] = {}
                 if readme.exists():
@@ -649,6 +721,10 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
                         "lawyer": lawyer,
                         "court": court,
                         "counterparty": counterparty,
+                        "tasks": tasks,
+                        "open_tasks": len([t for t in tasks if not t.get("done")]),
+                        "notes_excerpt": notes_excerpt,
+                        "timeline": timeline_items,
                     }
                 )
 

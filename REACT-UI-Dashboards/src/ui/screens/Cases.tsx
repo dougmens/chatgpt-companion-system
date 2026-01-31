@@ -165,6 +165,58 @@ export const Cases: React.FC = () => {
                 <strong>{selected.court ?? '-'}</strong>
               </div>
             </div>
+
+            <div className="detail-columns">
+              <section className="panel compact">
+                <h3>Aufgaben (Auszug)</h3>
+                {selected.tasks && selected.tasks.length > 0 ? (
+                  <ul className="mini-list">
+                    {selected.tasks.map((task, index) => (
+                      <li
+                        key={`${selected.id}-task-${index}`}
+                        className={`mini-item ${task.done ? 'task-done' : ''}`}
+                      >
+                        <span className="muted">{task.done ? '✓' : '•'}</span>
+                        <span>{task.text}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="muted">Keine Aufgaben gefunden.</p>
+                )}
+              </section>
+              <section className="panel compact">
+                <h3>Notizen (Auszug)</h3>
+                {selected.notes_excerpt && selected.notes_excerpt.length > 0 ? (
+                  <ul className="mini-list">
+                    {selected.notes_excerpt.map((line, index) => (
+                      <li key={`${selected.id}-note-${index}`} className="mini-item">
+                        <span className="muted">•</span>
+                        <span>{line}</span>
+                      </li>
+                    ))}
+                  </ul>
+                ) : (
+                  <p className="muted">Keine Notizen.</p>
+                )}
+              </section>
+            </div>
+
+            <section className="panel compact">
+              <h3>Timeline (Auszug)</h3>
+              {selected.timeline && selected.timeline.length > 0 ? (
+                <ul className="timeline-list">
+                  {selected.timeline.map((item, index) => (
+                    <li key={`${selected.id}-time-${index}`}>
+                      <span className="muted">{item.date ?? '—'}</span>
+                      <span>{item.text || 'Eintrag'}</span>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="muted">Keine Timeline-Einträge.</p>
+              )}
+            </section>
           </div>
         ) : (
           <p className="muted">Keine Fälle vorhanden.</p>

@@ -11,6 +11,25 @@ export const Master: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'overdue' | 'due3' | 'due10'>('all');
   const [selected, setSelected] = useState<DeadlineItem | null>(null);
 
+
+  const tasks = useMemo(() => {
+    return state.cases
+      .flatMap((item) =>
+        (item.tasks ?? [])
+          .filter((task) => !task.done)
+          .map((task) => ({ ...task, case_title: item.title })),
+      )
+      .slice(0, 5);
+  }, [state.cases]);
+
+  const notes = useMemo(() => {
+    return state.cases
+      .flatMap((item) =>
+        (item.notes_excerpt ?? []).map((line) => ({ line, case_title: item.title })),
+      )
+      .slice(0, 5);
+  }, [state.cases]);
+
   const deadlines: DeadlineItem[] = useMemo(() => {
     if (state.deadlines && state.deadlines.length > 0) return state.deadlines;
     return state.cases
@@ -131,6 +150,46 @@ export const Master: React.FC = () => {
             </button>
           ))}
           {upcoming.length === 0 && <p className="muted">Keine Fristen in den nächsten 7 Tagen.</p>}
+        </div>
+      </section>
+
+
+      <section className="panel">
+        <div className="panel-grid">
+          <div>
+            <h2>Aufgaben (Auszug)</h2>
+            {tasks.length > 0 ? (
+              <ul className="mini-list">
+                {tasks.map((task, index) => (
+                  <li key={`task-${index}`} className="mini-item">
+                    <span className="muted">•</span>
+                    <span>
+                      {task.text} · <em>{task.case_title}</em>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="muted">Keine offenen Aufgaben.</p>
+            )}
+          </div>
+          <div>
+            <h2>Notizen (Auszug)</h2>
+            {notes.length > 0 ? (
+              <ul className="mini-list">
+                {notes.map((note, index) => (
+                  <li key={`note-${index}`} className="mini-item">
+                    <span className="muted">•</span>
+                    <span>
+                      {note.line} · <em>{note.case_title}</em>
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="muted">Keine Notizen vorhanden.</p>
+            )}
+          </div>
         </div>
       </section>
 

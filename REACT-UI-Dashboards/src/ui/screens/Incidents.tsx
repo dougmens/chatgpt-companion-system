@@ -22,6 +22,10 @@ export const Incidents: React.FC = () => {
 
   const onSelect = (item: Incident) => setSelectedId(item.id);
 
+  const relatedCase = selected?.related_case_id
+    ? state.cases.find((item) => item.id === selected.related_case_id)
+    : undefined;
+
   const evidenceForIncident = selected
     ? state.evidence.filter((item) => item.incident_id === selected.id)
     : [];
@@ -112,6 +116,34 @@ export const Incidents: React.FC = () => {
                   {summaryLines}/6 Zeilen
                 </span>
               </label>
+            </div>
+
+
+            <div className="meta-grid">
+              <div>
+                <span className="muted">Datum</span>
+                <strong>{format(parseISO(selected.incident_date), 'dd.MM.yyyy')}</strong>
+              </div>
+              <div>
+                <span className="muted">Ort</span>
+                <strong>{selected.location ?? '-'}</strong>
+              </div>
+              <div>
+                <span className="muted">Schaden (EUR)</span>
+                <strong>{selected.estimated_damage_eur ?? '-'}</strong>
+              </div>
+              <div>
+                <span className="muted">Bezug Fall</span>
+                <strong>{relatedCase?.title ?? '-'}</strong>
+              </div>
+              <div>
+                <span className="muted">Zeugen</span>
+                <strong>{selected.witnesses && selected.witnesses.length > 0 ? selected.witnesses.join(', ') : '-'}</strong>
+              </div>
+              <div>
+                <span className="muted">Absicht vermutet</span>
+                <strong>{selected.intent_suspected ? 'Ja' : 'Nein'}</strong>
+              </div>
             </div>
 
             <section className="panel compact">

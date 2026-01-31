@@ -14,6 +14,17 @@ export type EvidenceStrength = 'schwach' | 'mittel' | 'stark';
 export type EvidenceType = 'foto' | 'pdf' | 'mail' | 'chat' | 'rechnung' | 'sonstiges';
 export type EvidenceSource = 'scan' | 'kamera' | 'gmail' | 'whatsapp' | 'notiz' | 'download' | 'sonstiges';
 
+
+export interface TaskItem {
+  text: string;
+  done: boolean;
+}
+
+export interface TimelineItem {
+  date?: string;
+  text: string;
+}
+
 export interface CaseItem {
   id: string;
   title: string;
@@ -32,6 +43,10 @@ export interface CaseItem {
   counterparty?: string;
   lawyer?: string;
   next_hearing_date?: string;
+  tasks?: TaskItem[];
+  open_tasks?: number;
+  notes_excerpt?: string[];
+  timeline?: TimelineItem[];
 }
 
 export interface Incident {
