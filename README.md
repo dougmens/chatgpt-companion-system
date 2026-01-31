@@ -22,12 +22,33 @@ Die **kanonische Systembeschreibung** findest du in `00_README.md`.
 - `companion-frontend/` → Haupt‑Frontend (React)
 - `REACT-UI-Dashboards/` → Dashboard‑UI (React)
 
-## Schnellstart (kurz)
-Die UIs sind Vite/React‑Projekte. Standard‑Ablauf pro UI‑Ordner:
-1) Abhängigkeiten installieren
-2) Dev‑Server starten
+## Voraussetzungen
+- Node.js (fuer die React‑UIs)
+- Python 3 (fuer `atlas-bridge/`)
 
-Wenn du möchtest, ergänze ich hier **konkrete Start‑Befehle** pro Projekt.
+## Schnellstart
+### companion-frontend
+```bash
+cd companion-frontend
+npm install
+npm run dev
+```
+
+### REACT-UI-Dashboards
+```bash
+cd REACT-UI-Dashboards
+npm install
+npm run dev
+```
+
+### atlas-bridge (Python)
+```bash
+cd atlas-bridge
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python server.py
+```
 
 ## Hinweise
 - Auto‑generierte Dateien (z. B. `node_modules/`, `dist/`, `venv/`) sind **ignoriert**.
