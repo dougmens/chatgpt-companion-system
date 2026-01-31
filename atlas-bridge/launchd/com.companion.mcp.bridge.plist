@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.companion.mcp.bridge</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/andreasschonlein/companion-system/atlas-bridge/start_mcp.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/andreasschonlein/companion-system/atlas-bridge</string>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>ATLAS_BRIDGE_HTTP</key>
+        <string>1</string>
+        <key>ATLAS_BRIDGE_HTTP_PORT</key>
+        <string>3333</string>
+        <key>ATLAS_BRIDGE_HTTP_ONLY</key>
+        <string>1</string>
+    </dict>
+
+    <key>RunAtLoad</key>
+    <true/>
+
+    <key>KeepAlive</key>
+    <true/>
+
+    <key>StandardOutPath</key>
+    <string>/Users/andreasschonlein/companion-system/atlas-bridge/.logs/launchd.out.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/andreasschonlein/companion-system/atlas-bridge/.logs/launchd.err.log</string>
+</dict>
+</plist>
