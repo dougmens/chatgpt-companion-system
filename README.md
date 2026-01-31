@@ -60,6 +60,12 @@ Die Templates liegen unter `atlas-bridge/launchd/`.
 
 Beispiel-Setup:
 ```bash
+./atlas-bridge/launchd/install_launchd.sh
+```
+
+Manuell:
+```bash
+```bash
 cp atlas-bridge/launchd/com.companion.mcp.bridge.plist ~/Library/LaunchAgents/
 cp atlas-bridge/launchd/com.companion.mcp.health.plist ~/Library/LaunchAgents/
 launchctl unload ~/Library/LaunchAgents/com.companion.mcp.bridge.plist 2>/dev/null
