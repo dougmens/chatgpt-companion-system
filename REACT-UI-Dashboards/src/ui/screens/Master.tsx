@@ -12,9 +12,15 @@ export const Master: React.FC = () => {
   const [selected, setSelected] = useState<DeadlineItem | null>(null);
 
   const priorityLabel = {
-    hoch: "P1",
-    mittel: "P2",
-    niedrig: "P3",
+    hoch: 'P1',
+    mittel: 'P2',
+    niedrig: 'P3',
+  } as const;
+
+  const priorityRank = {
+    hoch: 1,
+    mittel: 2,
+    niedrig: 3,
   } as const;
 
 
@@ -25,14 +31,16 @@ export const Master: React.FC = () => {
           .filter((task) => !task.done)
           .map((task) => ({ ...task, case_title: item.title })),
       )
+      .sort((a, b) => (priorityRank[a.priority ?? "mittel"] - priorityRank[b.priority ?? "mittel"]))
       .slice(0, 5);
   }, [state.cases]);
 
   const notes = useMemo(() => {
     return state.cases
       .flatMap((item) =>
-        (item.notes_excerpt ?? []).map((line) => ({ line, case_title: item.title })),
+        (item.notes_excerpt ?? []).map((note) => ({ note, case_title: item.title })),
       )
+      .sort((a, b) => (priorityRank[a.note.priority ?? "mittel"] - priorityRank[b.note.priority ?? "mittel"]))
       .slice(0, 5);
   }, [state.cases]);
 
@@ -201,9 +209,24 @@ export const Master: React.FC = () => {
                 {notes.map((note, index) => (
                   <li key={`note-${index}`} className="mini-item">
                     <span className="muted">•</span>
-                    <span>
-                      {note.line} · <em>{note.case_title}</em>
-                    </span>
+                    <div className="mini-content">
+                      <span>
+                        {note.note.text} · <em>{note.case_title}</em>
+                      </span>
+                      {(note.note.priority || note.note.label || (note.note.tags && note.note.tags.length > 0)) && (
+                        <div className="chip-row">
+                          {note.note.priority && (
+                            <span className={`chip chip-priority-${note.note.priority}`}>
+                              {priorityLabel[note.note.priority]}
+                            </span>
+                          )}
+                          {note.note.label && <span className="chip chip-label">{note.note.label}</span>}
+                          {note.note.tags?.map((tag) => (
+                            <span key={tag} className="chip chip-tag">#{tag}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>

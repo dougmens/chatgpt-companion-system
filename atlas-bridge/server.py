@@ -528,17 +528,20 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
                 break
         return items
 
-    def _parse_notes_excerpt(notes_md: str, limit: int = 6) -> List[str]:
-        items: List[str] = []
+    def _parse_notes_excerpt(notes_md: str, limit: int = 6) -> List[Dict[str, Any]]:
+        items: List[Dict[str, Any]] = []
         for line in _strip_frontmatter(notes_md).splitlines():
             s = line.strip()
             if not s or s.startswith("#"):
                 continue
             if s.startswith("- ") or s.startswith("* "):
                 s = s[2:].strip()
-            _, cleaned = _extract_tags(s)
-            if cleaned:
-                items.append(cleaned)
+            text, meta = _extract_line_meta(s)
+            if not text:
+                continue
+            item: Dict[str, Any] = {"text": text}
+            item.update(meta)
+            items.append(item)
             if len(items) >= limit:
                 break
         return items
@@ -601,7 +604,7 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
                     next_action = _extract_next_action(task_md)
                     tasks = _parse_tasks(task_md, limit=5)
 
-                notes_excerpt: List[str] = []
+                notes_excerpt: List[Dict[str, Any]] = []
                 if notes.exists():
                     notes_excerpt = _parse_notes_excerpt(notes.read_text(encoding="utf-8", errors="replace"), limit=6)
 

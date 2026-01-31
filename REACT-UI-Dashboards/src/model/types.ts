@@ -52,7 +52,7 @@ export interface CaseItem {
   next_hearing_date?: string;
   tasks?: TaskItem[];
   open_tasks?: number;
-  notes_excerpt?: string[];
+  notes_excerpt?: { text: string; priority?: PriorityLevel; label?: string; tags?: string[] }[];
   timeline?: TimelineItem[];
 }
 

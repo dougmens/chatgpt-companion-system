@@ -22,6 +22,12 @@ const priorityLabel = {
   niedrig: 'P3',
 } as const;
 
+const priorityRank = {
+  hoch: 1,
+  mittel: 2,
+  niedrig: 3,
+} as const;
+
 const sanitizeNextAction = (value: string) => {
   const trimmed = value.trim();
   if (!trimmed) {
@@ -177,7 +183,8 @@ export const Cases: React.FC = () => {
                 <h3>Aufgaben (Auszug)</h3>
                 {selected.tasks && selected.tasks.length > 0 ? (
                   <ul className="mini-list">
-                    {selected.tasks.map((task, index) => (
+                    {[...selected.tasks].sort((a, b) => (priorityRank[a.priority ?? "mittel"] - priorityRank[b.priority ?? "mittel"]))
+                    .map((task, index) => (
                       <li
                         key={`${selected.id}-task-${index}`}
                         className={`mini-item ${task.done ? 'task-done' : ''}`}
@@ -210,10 +217,26 @@ export const Cases: React.FC = () => {
                 <h3>Notizen (Auszug)</h3>
                 {selected.notes_excerpt && selected.notes_excerpt.length > 0 ? (
                   <ul className="mini-list">
-                    {selected.notes_excerpt.map((line, index) => (
+                    {[...selected.notes_excerpt].sort((a, b) => (priorityRank[a.priority ?? "mittel"] - priorityRank[b.priority ?? "mittel"]))
+                    .map((note, index) => (
                       <li key={`${selected.id}-note-${index}`} className="mini-item">
                         <span className="muted">•</span>
-                        <span>{line}</span>
+                        <div className="mini-content">
+                          <span>{note.text}</span>
+                          {(note.priority || note.label || (note.tags && note.tags.length > 0)) && (
+                            <div className="chip-row">
+                              {note.priority && (
+                                <span className={`chip chip-priority-${note.priority}`}>
+                                  {priorityLabel[note.priority]}
+                                </span>
+                              )}
+                              {note.label && <span className="chip chip-label">{note.label}</span>}
+                              {note.tags?.map((tag) => (
+                                <span key={tag} className="chip chip-tag">#{tag}</span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -227,7 +250,8 @@ export const Cases: React.FC = () => {
               <h3>Timeline (Auszug)</h3>
               {selected.timeline && selected.timeline.length > 0 ? (
                 <ul className="timeline-list">
-                  {selected.timeline.map((item, index) => (
+                  {[...selected.timeline].sort((a, b) => (priorityRank[a.priority ?? "mittel"] - priorityRank[b.priority ?? "mittel"]))
+                    .map((item, index) => (
                     <li key={`${selected.id}-time-${index}`}>
                       <span className="muted">{item.date ?? '—'}</span>
                       <div className="mini-content">
