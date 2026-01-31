@@ -5,7 +5,7 @@ import { McpStatus } from "./McpStatus";
 export function ChatWindow() {
   return (
     <div className="flex h-full flex-col bg-slate-950">
-      <header className="flex flex-col gap-3 border-b border-slate-800 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+      <header className="relative border-b border-slate-800 px-4 py-3 pr-36">
         <div>
           <h1 className="text-lg font-semibold text-slate-100">
             Companion Chat
@@ -14,7 +14,9 @@ export function ChatWindow() {
             Minimaler Chat-Stub mit Dashboard-Intent.
           </p>
         </div>
-        <McpStatus />
+        <div className="absolute right-4 top-3">
+          <McpStatus />
+        </div>
       </header>
       <main className="flex-1 overflow-y-auto p-4">
         <MessageList />

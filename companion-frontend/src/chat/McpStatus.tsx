@@ -89,11 +89,11 @@ export function McpStatus() {
   }, [timestamp]);
 
   return (
-    <div className="flex flex-col items-start gap-1 sm:items-end">
+    <div className="flex flex-col items-end gap-1 text-right">
       <div className={`rounded-full border px-2 py-1 text-xs font-semibold ${badgeClass}`}>
         MCP: {label}
       </div>
-      <span className="text-[11px] text-slate-400 sm:text-right">
+      <span className="text-[11px] text-slate-400">
         {formattedTime ? `Update: ${formattedTime}` : "Status wird ueberprueft..."}
       </span>
     </div>
