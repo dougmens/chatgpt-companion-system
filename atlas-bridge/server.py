@@ -706,6 +706,22 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
             self.wfile.write(result.encode("utf-8"))
 
         def do_GET(self) -> None:
+            if self.path == "/mcp-status":
+                status_path = Path(__file__).resolve().parent / ".status" / "mcp_status.json"
+                if status_path.exists():
+                    try:
+                        payload = json.loads(status_path.read_text(encoding="utf-8"))
+                        self._set_headers(200)
+                        self.wfile.write(json.dumps(payload, ensure_ascii=False).encode("utf-8"))
+                        return
+                    except Exception:
+                        pass
+                self._set_headers(200)
+                self.wfile.write(
+                    json.dumps({"status": "offline", "timestamp": _now_iso()}, ensure_ascii=False).encode("utf-8")
+                )
+                return
+
             # Dashboard data stream for the React UI.
             # Example: /dashboard-data?domain=recht
             if self.path.startswith("/dashboard-data"):

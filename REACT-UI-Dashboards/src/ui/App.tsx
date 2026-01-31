@@ -7,6 +7,7 @@ import { Incidents } from './screens/Incidents';
 import { Deadlines } from './screens/Deadlines';
 import { ArchiveView } from './screens/ArchiveView';
 import { SettingsView } from './screens/SettingsView';
+import { McpStatus } from './components/McpStatus';
 
 const navItems = [
   { to: '/', label: 'Übersicht', icon: Home },
@@ -43,6 +44,7 @@ export const App: React.FC = () => {
             );
           })}
         </nav>
+        <McpStatus />
       </aside>
       <main className="content">
         <Routes>
