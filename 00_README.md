@@ -9,7 +9,7 @@ Dieses Verzeichnis enthält ausschließlich **Systemwissen** für das Companion-
 - **Ergebnisdokumente** (`.pdf`, `.docx`, optional `.xlsx/.pptx`) liegen unter:
   `/Users/andreasschonlein/Documents/<Fachordner>/...`
 - **System-/Meta-Dateien** (`.md`, `.json`, `.yaml`, `.log`, etc.) liegen ausschließlich unter:
-  `/Users/andreasschonlein/Documents/companion-system/...`
+  `/Users/andreasschonlein/companion-system/...`
 
 ## Ordner-Navigation
 - `01_Setup_und_Definitionen/` → Fundament (Begriffe, Governance, Ablage-Regeln)

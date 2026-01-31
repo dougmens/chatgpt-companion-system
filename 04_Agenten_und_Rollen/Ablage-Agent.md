@@ -25,7 +25,7 @@ Er hält Ordnung im Finder, damit du und das Companion-System alles sofort wiede
 - **Finanzen (PDF/DOCX)** → `/Users/andreasschonlein/Documents/Finanzen/...`
 - **Verträge (PDF/DOCX)** → `/Users/andreasschonlein/Documents/Vertraege/...`
 - **Alltag/Verwaltung (PDF/DOCX)** → `/Users/andreasschonlein/Documents/Organisation/...`
-- **Alles an Regeln/Notizen/Setup (MD usw.)** → `/Users/andreasschonlein/Documents/companion-system/...`
+- **Alles an Regeln/Notizen/Setup (MD usw.)** → `/Users/andreasschonlein/companion-system/...`
 
 ## Scanner-Regel
 Der Scanner legt PDFs hier ab:
@@ -41,7 +41,7 @@ Wenn der Ablage-Agent nicht sicher ist, wohin eine Datei gehört:
 
 ## Protokoll (für Nachvollziehbarkeit)
 Der Ablage-Agent schreibt seine Aktionen nach:
-`/Users/andreasschonlein/Documents/companion-system/06_Logs_und_Protokolle/Ablage-Agent.log`
+`/Users/andreasschonlein/companion-system/06_Logs_und_Protokolle/Ablage-Agent.log`
 
 ## Merksatz
 **Ablage-Agent = Ordnung im Finder.**

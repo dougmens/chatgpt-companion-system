@@ -16,11 +16,11 @@ from fastmcp import FastMCP
 
 # ============================================================
 # Atlas-Bridge MCP Server (scoped, hardened)
-# Base scope: ~/Documents/companion-system/
+# Base scope: repository root (parent of atlas-bridge/)
 # ============================================================
 
 # --- Scope / Paths ---
-BASE_DIR = (Path.home() / "Documents" / "companion-system").resolve()
+BASE_DIR = Path(__file__).resolve().parent.parent
 BACKUP_DIR = (BASE_DIR / ".backups").resolve()
 LOG_DIR = (BASE_DIR / ".logs").resolve()
 BACKUP_DIR.mkdir(parents=True, exist_ok=True)

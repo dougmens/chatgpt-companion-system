@@ -33,7 +33,7 @@ Bei rechtlichen Dokumenten gilt zusätzlich:
 
 ## Protokoll (optional, aber empfohlen)
 Der Dokument-Agent protokolliert wichtige Erstellungen nach:
-`/Users/andreasschonlein/Documents/companion-system/06_Logs_und_Protokolle/Dokument-Agent.log`
+`/Users/andreasschonlein/companion-system/06_Logs_und_Protokolle/Dokument-Agent.log`
 
 ## Merksatz
 **Dokument-Agent = fertige PDFs/DOCX.**

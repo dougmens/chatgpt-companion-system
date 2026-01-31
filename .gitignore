@@ -50,3 +50,23 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# Local duplicates
+.gitignore 2
+companion-frontend/README 2.md
+companion-frontend/eslint.config 2.js
+companion-frontend/index 2.html
+companion-frontend/package 2.json
+companion-frontend/package-lock 2.json
+companion-frontend/postcss.config 2.js
+companion-frontend/public/vite 2.svg
+companion-frontend/src/App 2.css
+companion-frontend/src/App 2.tsx
+companion-frontend/src/index 2.css
+companion-frontend/src/main 2.tsx
+companion-frontend/tailwind.config 2.js
+companion-frontend/tsconfig 2.json
+companion-frontend/tsconfig.app 2.json
+companion-frontend/tsconfig.node 2.json
+companion-frontend/vite.config 2.ts
+dashboard 2.html
