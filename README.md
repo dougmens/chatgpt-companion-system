@@ -65,7 +65,6 @@ Beispiel-Setup:
 
 Manuell:
 ```bash
-```bash
 cp atlas-bridge/launchd/com.companion.mcp.bridge.plist ~/Library/LaunchAgents/
 cp atlas-bridge/launchd/com.companion.mcp.health.plist ~/Library/LaunchAgents/
 launchctl unload ~/Library/LaunchAgents/com.companion.mcp.bridge.plist 2>/dev/null
@@ -76,4 +75,19 @@ launchctl load ~/Library/LaunchAgents/com.companion.mcp.health.plist
 
 Statusdatei fuer das Dashboard:
 `/Users/andreasschonlein/companion-system/atlas-bridge/.status/mcp_status.json`
+
+
+## Troubleshooting
+- Health-Check: `curl http://localhost:3333/health`
+- Statusdatei: `atlas-bridge/.status/mcp_status.json`
+- Logs: `atlas-bridge/.logs/launchd.err.log`, `mcp.err.log`, `watchdog.log`, `health.log`
+- Launchd neu laden:
+```bash
+launchctl unload ~/Library/LaunchAgents/com.companion.mcp.bridge.plist 2>/dev/null
+launchctl load ~/Library/LaunchAgents/com.companion.mcp.bridge.plist
+```
+- Port 3333 belegt:
+```bash
+lsof -iTCP:3333 -sTCP:LISTEN
+```
 
