@@ -9,7 +9,7 @@ from http.server import BaseHTTPRequestHandler, HTTPServer
 from datetime import timedelta
 from pathlib import Path
 from datetime import datetime
-from typing import Dict, Any, List, Optional
+from typing import Dict, Any, List, Optional, Tuple
 from fastmcp import FastMCP
 
 
@@ -443,6 +443,67 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
                     return "\n".join(lines[i + 1 :])
         return md or ""
 
+    def _normalize_spaces(text: str) -> str:
+        return re.sub(r"\s+", " ", text or "").strip()
+
+    def _extract_tags(text: str) -> Tuple[List[str], str]:
+        tags = re.findall(r"#([\w\-äöüÄÖÜß]+)", text)
+        cleaned = re.sub(r"#([\w\-äöüÄÖÜß]+)", "", text)
+        return tags, _normalize_spaces(cleaned)
+
+    def _extract_priority(text: str) -> Tuple[Optional[str], str]:
+        priority = None
+        cleaned = text
+        match = re.search(r"\bP([1-3])\b", cleaned, flags=re.IGNORECASE)
+        if match:
+            priority = {"1": "hoch", "2": "mittel", "3": "niedrig"}[match.group(1)]
+            cleaned = cleaned.replace(match.group(0), "")
+            return priority, _normalize_spaces(cleaned)
+
+        match = re.search(
+            r"\b(?:prio|priority)\s*[:=]?\s*(hoch|mittel|niedrig|high|medium|low)\b",
+            cleaned,
+            flags=re.IGNORECASE,
+        )
+        if match:
+            raw = match.group(1).lower()
+            priority = {"hoch": "hoch", "mittel": "mittel", "niedrig": "niedrig", "high": "hoch", "medium": "mittel", "low": "niedrig"}[raw]
+            cleaned = cleaned.replace(match.group(0), "")
+            return priority, _normalize_spaces(cleaned)
+
+        match = re.search(r"(!{2,}|!)(?!\w)", cleaned)
+        if match:
+            priority = "hoch" if len(match.group(1)) >= 2 else "mittel"
+            cleaned = cleaned.replace(match.group(0), "")
+        return priority, _normalize_spaces(cleaned)
+
+    def _extract_label(text: str) -> Tuple[Optional[str], str]:
+        label = None
+        cleaned = text
+        match = re.search(r"\[(?:label|lbl)\s*:\s*([^\]]+)\]", cleaned, flags=re.IGNORECASE)
+        if match:
+            label = match.group(1).strip()
+            cleaned = cleaned.replace(match.group(0), "")
+            return label, _normalize_spaces(cleaned)
+        match = re.search(r"\b(label|etikett)\s*[:=]\s*([^#]+)", cleaned, flags=re.IGNORECASE)
+        if match:
+            label = match.group(2).strip()
+            cleaned = cleaned.replace(match.group(0), "")
+        return label, _normalize_spaces(cleaned)
+
+    def _extract_line_meta(text: str) -> Tuple[str, Dict[str, Any]]:
+        label, cleaned = _extract_label(text)
+        priority, cleaned = _extract_priority(cleaned)
+        tags, cleaned = _extract_tags(cleaned)
+        meta: Dict[str, Any] = {}
+        if label:
+            meta["label"] = label
+        if priority:
+            meta["priority"] = priority
+        if tags:
+            meta["tags"] = tags
+        return cleaned, meta
+
     def _parse_tasks(task_md: str, limit: int = 5) -> List[Dict[str, Any]]:
         items: List[Dict[str, Any]] = []
         for line in _strip_frontmatter(task_md).splitlines():
@@ -454,9 +515,15 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
                 done = True
             if done is None:
                 continue
-            text = s[5:].strip()
-            if text:
-                items.append({"text": text, "done": done})
+            raw = s[5:].strip()
+            if not raw:
+                continue
+            text, meta = _extract_line_meta(raw)
+            if not text:
+                continue
+            item: Dict[str, Any] = {"text": text, "done": done}
+            item.update(meta)
+            items.append(item)
             if len(items) >= limit:
                 break
         return items
@@ -467,7 +534,11 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
             s = line.strip()
             if not s or s.startswith("#"):
                 continue
-            items.append(s)
+            if s.startswith("- ") or s.startswith("* "):
+                s = s[2:].strip()
+            _, cleaned = _extract_tags(s)
+            if cleaned:
+                items.append(cleaned)
             if len(items) >= limit:
                 break
         return items
@@ -490,7 +561,10 @@ def _start_http_adapter(port: int, background: bool = True) -> HTTPServer:
             elif re.match(r"^\d{4}-\d{2}-\d{2}$", body):
                 date = body
                 text = ""
-            items.append({"date": date, "text": text})
+            text, meta = _extract_line_meta(text)
+            item: Dict[str, Any] = {"date": date, "text": text}
+            item.update(meta)
+            items.append(item)
             if len(items) >= limit:
                 break
         return items

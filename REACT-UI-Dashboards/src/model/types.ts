@@ -13,16 +13,23 @@ export type IncidentStatus = 'neu' | 'offen' | 'in_klaerung' | 'abgeschlossen' |
 export type EvidenceStrength = 'schwach' | 'mittel' | 'stark';
 export type EvidenceType = 'foto' | 'pdf' | 'mail' | 'chat' | 'rechnung' | 'sonstiges';
 export type EvidenceSource = 'scan' | 'kamera' | 'gmail' | 'whatsapp' | 'notiz' | 'download' | 'sonstiges';
+export type PriorityLevel = 'hoch' | 'mittel' | 'niedrig';
 
 
 export interface TaskItem {
   text: string;
   done: boolean;
+  priority?: PriorityLevel;
+  label?: string;
+  tags?: string[];
 }
 
 export interface TimelineItem {
   date?: string;
   text: string;
+  priority?: PriorityLevel;
+  label?: string;
+  tags?: string[];
 }
 
 export interface CaseItem {

@@ -16,6 +16,12 @@ const statusOptions: CaseStatus[] = [
 
 const riskOptions: RiskLevel[] = ['niedrig', 'mittel', 'hoch'];
 
+const priorityLabel = {
+  hoch: 'P1',
+  mittel: 'P2',
+  niedrig: 'P3',
+} as const;
+
 const sanitizeNextAction = (value: string) => {
   const trimmed = value.trim();
   if (!trimmed) {
@@ -177,7 +183,22 @@ export const Cases: React.FC = () => {
                         className={`mini-item ${task.done ? 'task-done' : ''}`}
                       >
                         <span className="muted">{task.done ? '✓' : '•'}</span>
-                        <span>{task.text}</span>
+                        <div className="mini-content">
+                          <span>{task.text}</span>
+                          {(task.priority || task.label || (task.tags && task.tags.length > 0)) && (
+                            <div className="chip-row">
+                              {task.priority && (
+                                <span className={`chip chip-priority-${task.priority}`}>
+                                  {priorityLabel[task.priority]}
+                                </span>
+                              )}
+                              {task.label && <span className="chip chip-label">{task.label}</span>}
+                              {task.tags?.map((tag) => (
+                                <span key={tag} className="chip chip-tag">#{tag}</span>
+                              ))}
+                            </div>
+                          )}
+                        </div>
                       </li>
                     ))}
                   </ul>
@@ -209,7 +230,16 @@ export const Cases: React.FC = () => {
                   {selected.timeline.map((item, index) => (
                     <li key={`${selected.id}-time-${index}`}>
                       <span className="muted">{item.date ?? '—'}</span>
-                      <span>{item.text || 'Eintrag'}</span>
+                      <div className="mini-content">
+                        <span>{item.text || 'Eintrag'}</span>
+                        {item.tags && item.tags.length > 0 && (
+                          <div className="chip-row">
+                            {item.tags.map((tag) => (
+                              <span key={tag} className="chip chip-tag">#{tag}</span>
+                            ))}
+                          </div>
+                        )}
+                      </div>
                     </li>
                   ))}
                 </ul>

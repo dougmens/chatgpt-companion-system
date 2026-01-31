@@ -11,6 +11,12 @@ export const Master: React.FC = () => {
   const [filter, setFilter] = useState<'all' | 'overdue' | 'due3' | 'due10'>('all');
   const [selected, setSelected] = useState<DeadlineItem | null>(null);
 
+  const priorityLabel = {
+    hoch: "P1",
+    mittel: "P2",
+    niedrig: "P3",
+  } as const;
+
 
   const tasks = useMemo(() => {
     return state.cases
@@ -163,9 +169,24 @@ export const Master: React.FC = () => {
                 {tasks.map((task, index) => (
                   <li key={`task-${index}`} className="mini-item">
                     <span className="muted">•</span>
-                    <span>
-                      {task.text} · <em>{task.case_title}</em>
-                    </span>
+                    <div className="mini-content">
+                      <span>
+                        {task.text} · <em>{task.case_title}</em>
+                      </span>
+                      {(task.priority || task.label || (task.tags && task.tags.length > 0)) && (
+                        <div className="chip-row">
+                          {task.priority && (
+                            <span className={`chip chip-priority-${task.priority}`}>
+                              {priorityLabel[task.priority]}
+                            </span>
+                          )}
+                          {task.label && <span className="chip chip-label">{task.label}</span>}
+                          {task.tags?.map((tag) => (
+                            <span key={tag} className="chip chip-tag">#{tag}</span>
+                          ))}
+                        </div>
+                      )}
+                    </div>
                   </li>
                 ))}
               </ul>

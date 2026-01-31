@@ -24,3 +24,14 @@ Dieses Verzeichnis enthält ausschließlich **Systemwissen** für das Companion-
 - Systemarbeit (Regeln/MD/Struktur) mache ich **nur in der ChatGPT-Webversion**.
 - Wenn etwas nicht im Finder existiert, gilt es als **nicht erledigt**.
 
+
+## Dashboard-Parsing (Kurzformat)
+Für die Dashboard-Ansicht werden kurze Auszuege aus den Fallakten gelesen:
+
+- `Aufgaben.md`: Zeilen mit `- [ ]` oder `- [x]`.
+  Optional: `P1/P2/P3` oder `prio:hoch|mittel|niedrig`, `label:...` bzw. `[label: ...]`, Tags `#tag`.
+- `Notizen.md`: Erste Zeilen (ohne Ueberschriften). Tags `#tag` werden entfernt.
+- `Timeline.md`: Bullet-Lines, z. B. `- 2026-01-31: Ereignis`. Optional Tags/Label/Prioritaet wie oben.
+
+Hinweis: Das Parsing ist bewusst einfach und kuerzt automatisch (max. 5 Aufgaben/Timeline, 6 Notizzeilen).
+
