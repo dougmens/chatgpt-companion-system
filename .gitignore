@@ -1,6 +1,13 @@
 # OS / editor
 .DS_Store
+.AppleDouble
+.LSOverride
+.Spotlight-V100
+.Trashes
 .vscode/
+.idea/
+*.swp
+*~
 
 # Local tooling
 .logs/
@@ -12,17 +19,34 @@ node_modules/
 dist/
 build/
 coverage/
+.cache/
+.parcel-cache/
+.vite/
+.eslintcache
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+turbo/
+.next/
+out/
 
 # Python
 venv/
+.venv/
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
 *.log
 *.bak
 *.bak.*
+*.tmp
 
 # Env files
 .env
 .env.*
+!.env.example
