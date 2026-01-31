@@ -1,0 +1,28 @@
+# OS / editor
+.DS_Store
+.vscode/
+
+# Local tooling
+.logs/
+.backups/
+.qodo/
+
+# Node / frontend
+node_modules/
+dist/
+build/
+coverage/
+
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.log
+*.bak
+*.bak.*
+
+# Env files
+.env
+.env.*
