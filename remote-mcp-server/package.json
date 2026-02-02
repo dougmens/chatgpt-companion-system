@@ -1,0 +1,23 @@
+{
+  "name": "remote-mcp-server",
+  "version": "1.0.0",
+  "description": "Remote MCP Server for Companion-System",
+  "main": "dist/server.js",
+  "type": "commonjs",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "dev": "node dist/server.js",
+    "health": "curl http://localhost:3333/health"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^22.2.0",
+    "typescript": "^5.9.3"
+  }
+}
