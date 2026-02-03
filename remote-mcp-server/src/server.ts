@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3333;
 
 /* --------------------------------------------------
-   Middleware: Logging + JSON
+   Logging + JSON
 -------------------------------------------------- */
 
 app.use(morgan("combined"));
@@ -27,7 +27,7 @@ app.get("/health", (_req: Request, res: Response) => {
 });
 
 /* --------------------------------------------------
-   Rate Limiting für MCP
+   Rate Limiting
 -------------------------------------------------- */
 
 const mcpLimiter = rateLimit({
@@ -64,7 +64,7 @@ app.use("/mcp", requireApiKey);
 -------------------------------------------------- */
 
 app.post("/mcp/intent", async (req: Request, res: Response) => {
-  const body = (req.body ?? {}) as Partial<MCPRequest>;
+  const body = req.body as MCPRequest;
 
   console.log("📥 MCP INTENT RECEIVED", {
     intent: body.intent,
@@ -94,7 +94,7 @@ app.post("/mcp/intent", async (req: Request, res: Response) => {
 });
 
 /* --------------------------------------------------
-   Server Start
+   Start
 -------------------------------------------------- */
 
 app.listen(PORT, () => {
