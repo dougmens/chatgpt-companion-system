@@ -1,4 +1,6 @@
 // src/server.ts
+import morgan from "morgan";
+import rateLimit from "express-rate-limit";
 
 import express, { Request, Response } from "express";
 import { handleIntent, type MCPRequest } from "./mcp/registry";
