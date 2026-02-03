@@ -6,18 +6,17 @@
   "type": "commonjs",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js",
-    "dev": "node dist/server.js",
-    "health": "curl http://localhost:3333/health"
+    "start": "node dist/server.js"
   },
-  "author": "",
-  "license": "ISC",
   "dependencies": {
-    "express": "^5.2.1"
+    "express": "^5.1.0",
+    "morgan": "^1.10.0",
+    "express-rate-limit": "^7.0.0"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
-    "@types/node": "^22.2.0",
+    "@types/node": "^22.0.0",
+    "@types/morgan": "^1.9.9",
     "typescript": "^5.9.3"
   }
 }
