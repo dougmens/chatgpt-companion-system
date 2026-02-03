@@ -1,16 +1,23 @@
-// src/server.ts
+import express, { Request, Response, NextFunction } from "express";
 import morgan from "morgan";
 import rateLimit from "express-rate-limit";
 
-import express, { Request, Response } from "express";
 import { handleIntent, type MCPRequest } from "./mcp/registry";
 
 const app = express();
 const PORT = process.env.PORT ? Number(process.env.PORT) : 3333;
 
+/* --------------------------------------------------
+   Middleware: Logging + JSON
+-------------------------------------------------- */
+
+app.use(morgan("combined"));
 app.use(express.json({ limit: "1mb" }));
 
-// ---------- Health ----------
+/* --------------------------------------------------
+   Health (öffentlich)
+-------------------------------------------------- */
+
 app.get("/health", (_req: Request, res: Response) => {
   res.json({
     ok: true,
@@ -19,38 +26,77 @@ app.get("/health", (_req: Request, res: Response) => {
   });
 });
 
-// ---------- MCP Intent Endpoint ----------
-app.post("/mcp/intent", (req: Request, res: Response) => {
+/* --------------------------------------------------
+   Rate Limiting für MCP
+-------------------------------------------------- */
+
+const mcpLimiter = rateLimit({
+  windowMs: 60 * 1000,
+  max: 60,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { ok: false, error: "Rate limit exceeded" },
+});
+
+app.use("/mcp", mcpLimiter);
+
+/* --------------------------------------------------
+   API Key Schutz
+-------------------------------------------------- */
+
+function requireApiKey(req: Request, res: Response, next: NextFunction) {
+  const key = req.header("X-API-Key");
+
+  if (!key || key !== process.env.MCP_API_KEY) {
+    return res.status(401).json({
+      ok: false,
+      error: "Unauthorized",
+    });
+  }
+
+  next();
+}
+
+app.use("/mcp", requireApiKey);
+
+/* --------------------------------------------------
+   MCP Intent Endpoint
+-------------------------------------------------- */
+
+app.post("/mcp/intent", async (req: Request, res: Response) => {
   const body = (req.body ?? {}) as Partial<MCPRequest>;
 
-  // zentrales Logging (wichtig für Governance)
   console.log("📥 MCP INTENT RECEIVED", {
     intent: body.intent,
     hasPayload: body.payload !== undefined,
     ts: new Date().toISOString(),
   });
 
-  const response = handleIntent({
-    intent: (body.intent ?? "").toString(),
-    payload: body.payload,
-  });
+  try {
+    const result = await handleIntent(body);
 
-  // 400 bei formalen Fehlern, sonst 200 (auch bei unknown intent)
-  if (!response.ok && response.error?.toLowerCase().includes("missing intent")) {
-    return res.status(400).json(response);
+    res.json({
+      ok: true,
+      handled: true,
+      intent: body.intent,
+      service: "remote-mcp-server",
+      ts: new Date().toISOString(),
+      result,
+    });
+  } catch (err: any) {
+    console.error("❌ MCP ERROR", err);
+
+    res.status(500).json({
+      ok: false,
+      error: err?.message ?? "Unknown MCP error",
+    });
   }
-  return res.status(200).json(response);
 });
 
-// ---------- Fallback ----------
-app.use((_req: Request, res: Response) => {
-  res.status(404).json({
-    ok: false,
-    error: "Endpoint not found",
-    ts: new Date().toISOString(),
-  });
-});
+/* --------------------------------------------------
+   Server Start
+-------------------------------------------------- */
 
 app.listen(PORT, () => {
-  console.log(`🚀 Remote MCP Server listening on port ${PORT}`);
+  console.log(`🚀 Remote MCP Server running on port ${PORT}`);
 });
