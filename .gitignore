@@ -70,3 +70,6 @@ companion-frontend/tsconfig.app 2.json
 companion-frontend/tsconfig.node 2.json
 companion-frontend/vite.config 2.ts
 dashboard 2.html
+
+# Local archive (do not commit)
+Archiv.zip
