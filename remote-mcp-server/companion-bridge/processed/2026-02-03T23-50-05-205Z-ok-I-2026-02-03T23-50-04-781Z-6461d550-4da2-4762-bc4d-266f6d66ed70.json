@@ -1,0 +1,11 @@
+{
+  "intentId": "I-2026-02-03T23-50-04-781Z-6461d550-4da2-4762-bc4d-266f6d66ed70",
+  "received_at": "2026-02-03T23:50:04.781Z",
+  "auth": {
+    "sub": "apikey-client"
+  },
+  "intent": "UPDATE_DASHBOARD_DATA",
+  "payload": {
+    "caseId": "TEST-002"
+  }
+}

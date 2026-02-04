@@ -1,37 +1,89 @@
-# Companion-System – README (Kanon)
+# 00_README – Schnellstart (Human & Agent Entry Point)
 
 ## Zweck
-Dieses Verzeichnis enthält ausschließlich **Systemwissen** für das Companion-System (Regeln, Definitionen, Rollen, Protokolle).
+Diese Datei ist der **Einstiegspunkt** für:
+- neue Agenten
+- externe Tools
+- zukünftige Automationen
+- Menschen, die das System erstmals öffnen
 
-**Wichtig:** Hier liegen keine Ergebnisdokumente (keine PDFs/DOCX).
+Sie ist **kurz**, **orientierend** und verweist auf die maßgeblichen Dokumente.
 
-## Harte Trennregel
-- **Ergebnisdokumente** (`.pdf`, `.docx`, optional `.xlsx/.pptx`) liegen unter:
-  `/Users/andreasschonlein/Documents/<Fachordner>/...`
-- **System-/Meta-Dateien** (`.md`, `.json`, `.yaml`, `.log`, etc.) liegen ausschließlich unter:
-  `/Users/andreasschonlein/companion-system/...`
+---
 
-## Ordner-Navigation
-- `01_Setup_und_Definitionen/` → Fundament (Begriffe, Governance, Ablage-Regeln)
-- `02_Arbeitsregeln_und_Leitfaeden/` → Alltag (Leitfäden, Checklisten)
-- `03_Fallakten_Meta/` → Fallakten-Meta (nur `.md`, keine PDFs)
-- `04_Agenten_und_Rollen/` → Zuständigkeiten & Grenzen
-- `05_Schemata_und_Mappings/` → Schemata & Mappings (z. B. companion-json-v2)
-- `06_Logs_und_Protokolle/` → Protokolle/Logs
-- `90_Archiv/` → abgelöste Stände
+## System-Root (verbindlich)
 
-## Arbeitsmodus (kurz)
-- Systemarbeit (Regeln/MD/Struktur) mache ich **nur in der ChatGPT-Webversion**.
-- Wenn etwas nicht im Finder existiert, gilt es als **nicht erledigt**.
+```
+/Users/andreasschonlein/companion-system/
+```
 
+> ⚠️ Das System liegt **nicht** unter `~/Documents`.
 
-## Dashboard-Parsing (Kurzformat)
-Für die Dashboard-Ansicht werden kurze Auszuege aus den Fallakten gelesen:
+---
 
-- `Aufgaben.md`: Zeilen mit `- [ ]` oder `- [x]`.
-  Optional: `P1/P2/P3` oder `prio:hoch|mittel|niedrig`, `label:...` bzw. `[label: ...]`, Tags `#tag`.
-- `Notizen.md`: Erste Zeilen (ohne Ueberschriften). Tags `#tag` werden entfernt.
-- `Timeline.md`: Bullet-Lines, z. B. `- 2026-01-31: Ereignis`. Optional Tags/Label/Prioritaet wie oben.
+## Was ist dieses System?
 
-Hinweis: Das Parsing ist bewusst einfach und kuerzt automatisch (max. 5 Aufgaben/Timeline, 6 Notizzeilen).
+Das Companion-System ist ein **strukturierter KI-Orchestrator**:
+- ChatGPT denkt und entscheidet
+- Dashboards visualisieren
+- Automationen führen aus
+- Daten bleiben lokal und konsistent
 
+---
+
+## Zentrale Dokumente (lesen in dieser Reihenfolge)
+
+1. **MASTER_MD – Companion-System.md**  
+   → Oberste Referenz (Architektur, Regeln, Pfade)
+
+2. **AUTOMATIONS-ANHANG – Bridge, Intent-Handling, Word-PDF-Acrobat.md**  
+   → Wie Entscheidungen technisch umgesetzt werden
+
+3. **README.md**  
+   → Überblick & Ordnerstruktur
+
+---
+
+## Kurzregeln (hart)
+
+- Keine Arbeit außerhalb des System-Roots
+- Keine stillen Annahmen
+- Steuerung nur über strukturierte Intents
+- `companion-json-v2` ist gepinnt
+- Events = Wahrheit, Entities = Zustand
+
+---
+
+## Ordner-Mindestverständnis
+
+```
+data/        → Persistente Systemdaten
+inbox/       → Eingehende Intents
+processed/   → Abgearbeitete Intents
+logs/        → Audit & Fehler
+output/      → Generierte Dateien
+```
+
+---
+
+## Für Agenten
+
+- Lies **MASTER_MD zuerst**
+- Verwende keine absoluten Pfade außerhalb des Roots
+- Erzeuge keine UI im Chat
+- Halte dich strikt an Intent-Reihenfolge
+
+---
+
+## Für Menschen
+
+- Dieses System ersetzt kein Denken
+- Es erzwingt Struktur und Klarheit
+- Es ist absichtlich streng
+
+---
+
+## Ziel
+
+Ein **robustes, wartbares, langfristiges** Companion-System,
+das nicht durch implizite Annahmen zerfällt.

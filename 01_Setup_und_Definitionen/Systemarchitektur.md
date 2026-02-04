@@ -1,61 +1,151 @@
 # Systemarchitektur – Companion-System
 
-## Zweck
-Diese Datei beschreibt die Systemarchitektur des Companion-Systems mit Fokus auf **atlas-bridge** als I/O- und Ausführungsschicht.
+## Status
+Kanonisch · beschreibend · verbindlich
 
-## Architektur-Überblick (Schichten)
-1. **Wissens-/Regelschicht** (companion-system)
-   - Enthält Regeln, Definitionen, Rollen, Schemata und Protokolle.
-   - Ist die normative Quelle für Struktur und Verhalten.
-2. **I/O- und Ausführungsschicht** (atlas-bridge)
-   - Vermittelt Ein- und Ausgaben sowie die Ausführung lokaler Operationen.
-   - Stellt die technische Brücke zwischen Systemwissen und realen Artefakten her.
-3. **Ergebnis-/Fachdokumente** (Fachordner außerhalb von companion-system)
-   - Enthält Outputs wie `.pdf`, `.docx`, optional `.xlsx/.pptx`.
+## Zweck dieses Dokuments
+Dieses Dokument beschreibt die **tatsächlich umgesetzte Systemarchitektur**
+des Companion-Systems. Es dient als technische Referenz und
+verbindlicher Orientierungsrahmen für Implementierung, Betrieb und Wartung.
 
-## Rolle von atlas-bridge
-**atlas-bridge** ist die **I/O- und Ausführungsschicht** des Companion-Systems.
+Neue Architekturentscheidungen werden hier **nicht** getroffen.
 
-Kernaufgaben:
-- **I/O-Orchestrierung**: Einlesen/Schreiben von Dateien außerhalb des Systemwissens.
-- **Ausführung**: Kontrollierte Ausführung von lokalen Operationen (z. B. Shell-Commands), sofern durch Regeln erlaubt.
-- **Brücke**: Übersetzt Systemregeln in konkrete Arbeitsaktionen und Dateizugriffe.
+---
 
-Nicht-Aufgaben:
-- Kein Ort für Systemwissen (keine Regeln/Definitionen im atlas-bridge-Verzeichnis).
-- Kein Ort für Ergebnisdokumente, außer technischer Zwischenschritte.
+## 1. Architekturprinzip
 
-## Daten- und Kontrollfluss (vereinfacht)
-```
-[companion-system]
-  Regeln/Schemata/Rollen
-          |
-          v
-     [atlas-bridge]
-  I/O + Ausführung
-          |
-          v
-[Ergebnisdokumente]
-  (Fachordner)
-```
+Das Companion-System folgt einer **mehrschichtigen, strikt getrennten Architektur**:
 
-## Schnittstellen
-- **Nach innen (companion-system)**
-  - Nimmt Vorgaben aus Regeln, Schemata und Arbeitsleitfäden auf.
-  - Verändert Systemwissen nicht ohne explizite Anweisung.
-- **Nach außen (Fachordner)**
-  - Schreibt/liest Ergebnisdokumente gemäß Ablageregeln.
-  - Hält die Trennregel zwischen Systemwissen und Ergebnissen ein.
+- Denken & Entscheiden
+- Strukturierte Steuerung
+- Technische Ausführung
+- Visuelle Darstellung
 
-## Zuständigkeiten & Grenzen
-- **companion-system**: Normative Quelle; legt fest *was* und *wie* gearbeitet wird.
-- **atlas-bridge**: Führt aus; entscheidet nicht selbstständig über Inhalte oder Ablageorte.
-- **Fachordner**: Zielorte für Ergebnisse; keine Systemregeln.
+Jede Schicht hat **klar definierte Aufgaben** und **ersetzt keine andere**.
 
-## Betriebsprinzipien
-- **Nachvollziehbarkeit**: Aktionen über atlas-bridge müssen nachvollziehbar sein.
-- **Minimaler Eingriff**: Nur notwendige I/O- und Ausführungsschritte durchführen.
-- **Trennung wahren**: Keine Ergebnisdokumente im Systemwissen, keine Regeln in Fachordnern.
+---
 
-## Geltungsbereich
-Diese Architektur gilt für alle Arbeitsmodi und Agenten, die mit dem Companion-System interagieren.
+## 2. Schichtenmodell (Übersicht)
+
+### 2.1 Chat-Ebene
+**Funktion:** Analyse, Strukturierung, Entscheidungsfindung
+
+- Interaktion mit Companion.Andreas
+- Aktivierung von Fachrollen
+- Erzeugung strukturierter Intents
+- Keine UI-Simulation
+- Keine Persistenz
+
+---
+
+### 2.2 Intent-Ebene
+**Funktion:** Strukturierte Steuerung
+
+- Format: `companion-json-v2`
+- Intents sind explizit und maschinenlesbar
+- Reihenfolge ist verbindlich
+
+Zulässige Kern-Intents:
+- UPDATE_DASHBOARD_DATA
+- SHOW_DASHBOARD
+- FOCUS_ENTITY
+- PLAN_WORKFLOW
+
+---
+
+### 2.3 Bridge-Ebene (Atlas-Bridge)
+**Funktion:** Technische Vermittlungs- und Ausführungsschicht
+
+- Lokaler MCP-Server (Python)
+- HTTP-Endpunkte (z. B. `/health`, `/dashboard-data`)
+- Validierung und Routing von Intents
+- Bereitstellung von Dashboard-Daten
+- Watchdog- und Health-Check-Integration (launchd)
+
+Die Bridge trifft **keine fachlichen Entscheidungen**.
+
+---
+
+### 2.4 Dashboard-Ebene
+**Funktion:** Visualisierung & Navigation
+
+- Externe React-Anwendungen (Vite)
+- Rein lesende Darstellung des Systemzustands
+- Navigation zwischen Fällen, Fristen, Aufgaben
+- Kein Business-Logic-Ersatz
+- Kein Schreiben von Systemregeln
+
+Dashboards sind **austauschbar**, solange sie die Datenverträge einhalten.
+
+---
+
+### 2.5 Tool- & Dateisystem-Ebene
+**Funktion:** Konkrete Ausführung
+
+- Lokale Skripte
+- Dateisystem
+- Word / PDF / Acrobat
+- Betriebssystem-Mechanismen (launchd)
+
+Diese Ebene führt aus, **entscheidet aber nicht**.
+
+---
+
+## 3. Datenfluss (vereinfachtes Modell)
+
+1. Nutzer interagiert im Chat
+2. Companion.Andreas erzeugt Intents
+3. Intents werden an die Atlas-Bridge übergeben
+4. Bridge:
+   - validiert
+   - verarbeitet
+   - liefert strukturierte Daten
+5. Dashboards visualisieren den Zustand
+6. Tools setzen Aktionen um (falls vorgesehen)
+
+---
+
+## 4. Betriebsarchitektur (lokal)
+
+- Companion-System läuft primär **lokal**
+- Atlas-Bridge wird über `launchd` gestartet
+- Health-Check prüft Erreichbarkeit
+- Frontends werden bei Bedarf manuell gestartet
+- Kein Cloud-Zwang
+
+---
+
+## 5. Abgrenzungen & Verantwortlichkeiten
+
+- Chat:
+  - denkt
+  - entscheidet
+- Bridge:
+  - vermittelt
+  - führt aus
+- Dashboard:
+  - zeigt an
+- Tools:
+  - arbeiten
+
+Verletzungen dieser Abgrenzung gelten als **Architekturfehler**.
+
+---
+
+## 6. Erweiterbarkeit
+
+Neue Komponenten dürfen nur ergänzt werden, wenn sie:
+- sich eindeutig einer Schicht zuordnen lassen
+- bestehende Rollen nicht ersetzen
+- die Governance-Regeln einhalten
+
+---
+
+## 7. Geltung
+
+Dieses Dokument gilt:
+- systemweit
+- rollenübergreifend
+- solange, bis es bewusst geändert wird
+
+Änderungen erfolgen ausschließlich gemäß `Governance.md`.

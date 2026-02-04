@@ -3,20 +3,27 @@
   "version": "1.0.0",
   "description": "Remote MCP Server for Companion-System",
   "main": "dist/server.js",
-  "type": "commonjs",
+  "type": "module",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/server.js"
+    "start": "node -r dotenv/config dist/server.js",
+    "dev": "node -r dotenv/config dist/server.js",
+    "health": "curl http://localhost:3333/health",
+    "bridge": "node -r dotenv/config dist/bridge/index.js"
   },
   "dependencies": {
+    "chokidar": "^3.6.0",
+    "date-fns": "^3.6.0",
+    "dotenv": "^16.4.5",
     "express": "^5.1.0",
+    "express-rate-limit": "^7.4.1",
+    "jose": "^5.9.6",
     "morgan": "^1.10.0",
-    "express-rate-limit": "^7.0.0"
+    "oidc-provider": "^8.5.0"
   },
   "devDependencies": {
-    "@types/express": "^5.0.6",
-    "@types/node": "^22.0.0",
-    "@types/morgan": "^1.9.9",
+    "@types/express": "^5.0.3",
+    "@types/node": "^20.11.30",
     "typescript": "^5.9.3"
   }
 }
